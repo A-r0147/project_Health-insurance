@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 export function connectToDB() {
-    mongoose.connect(process.env.DB,{useNewUrlParser:true,useUnifiedTopology:true})
+    mongoose.connect(process.env.DB)
     .then(()=>{
         console.log("Connected to DB");
     })
