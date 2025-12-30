@@ -5,6 +5,9 @@ import cors from 'cors';
 import productRouter from './routes/product.js';
 import userRouter from './routes/user.js';
 import orderRouter from './routes/order.js';
+import { connectDB } from './config/db.js';
+
+connectDB();
 
 dotenv.config();
 
