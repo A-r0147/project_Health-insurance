@@ -7,7 +7,6 @@ import userRouter from './routes/user.js';
 import orderRouter from './routes/order.js';
 import { connectDB } from './config/db.js';
 
-connectDB();
 
 dotenv.config();
 
@@ -15,6 +14,8 @@ const app = express();
 
 app.use(express.json());
 app.use(cors()); //איפשור גישה מקליינט לשרת
+
+connectDB();
 
 app.use("/api/products", productRouter);
 app.use("api/users",userRouter);
