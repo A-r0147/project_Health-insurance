@@ -8,28 +8,45 @@ export async function addUser(req, res) {  //כדאי לקרוא לזה sigh up?
     let { userName, email, password } = req.body
     if (!userName || !password || !email)
         return res.status(400).json({ title: "Missing data", message: "Username, password, email are required" })
-    //כאן המקום לבדוק שהסיסמא במבנה תקין וכן המייל
-    //וכן בדיקה מה קורה כמוסיפים יוזר שכבר קיים אבל הוא בסטטוס לא פעיל
-    let already = await userModel.findOne({ email }) //status:true
-    if (already)
-        return res.status(409).json({ title: "duplicate user", message: "a user with the same email already exists" })
+    if (password.length < 8 || password.includes(" ") || !password.match(/[A-Z]/) || !password.match(/[a-z]/) || !password.match(/[0-9]/))
+        return res.status(400).json({ title: "Invalid password", message: "Password must be at least 8 characters long, contain uppercase and lowercase letters, a number, and have no spaces" })
+    let isValid = true;
     try {
-        let hashedPassword = hashSync(password, process.env.SALT_ROUNDS ? parseInt(process.env.SALT_ROUNDS) : 10)
-        // console.log(hashedPassword);
-        let newUser = new userModel({ userName, password: hashedPassword, email })
-        let user = await newUser.save()
-        try {
-            let { password, ...other } = user.toObject();
+        new MailAddress(email);  //פונקציה שהמבנה התחבירי של האימייל חוקי
+    }
+    catch {
+        isValid = false;
+    }
+    if (!isValid)
+        return res.status(400).json({ title: "Invalid email", message: "Email format is incorrect" })
+    let already = await userModel.findOne({ email })
+    if (already)
+        if (already.status === true)
+            return res.status(409).json({ title: "duplicate user", message: "a user with the same email already exists" })
+        else if (already.status === false) {
+            //איך לטפל במקרה שיש משתמש שמור - לא פעיל עם אותו אימייל?
+            //לבינתיים שמתי סתם return
+            return res.status(409).json({ title: "inactive user", message: "a user with the same email exists but is inactive" })
+        }
+        else {  //אם אין וגם לא היה משתמש כזה
+            try {
+                let hashedPassword = hashSync(password, process.env.SALT_ROUNDS ? parseInt(process.env.SALT_ROUNDS) : 10)
+                // console.log(hashedPassword);
+                let newUser = new userModel({ userName, password: hashedPassword, email })
+                let user = await newUser.save()
+                try {
+                    let { password, ...other } = user.toObject();
 
-            return res.status(201).json(other)
+                    return res.status(201).json(other)
+                }
+                catch (err) {
+                    return res.status(500).json({ title: "Error creating user", message: err })
+                }
+            }
+            catch (err) {
+                return res.status(500).json({ title: "Error creating user", message: err })
+            }
         }
-        catch (err) {
-            return res.status(500).json({ title: "Error creating user", message: err })
-        }
-    }
-    catch (err) {
-        return res.status(500).json({ title: "Error creating user", message: err })
-    }
 }
 
 export async function login(req, res) {
@@ -58,7 +75,7 @@ export async function login(req, res) {
 
 export async function getUsers(req, res) {
     try {
-        let users = await userModel.find({ role:'PATIENT',status: true });
+        let users = await userModel.find({ role: 'PATIENT', status: true });
         return res.json(users);
     }
     catch (err) {
@@ -66,6 +83,12 @@ export async function getUsers(req, res) {
     }
 }
 
-//function getDoctors
-
-//כמובן שאפשר להוסיך פעולות עדכון סיסמא עדגכון כל הפרטים
+export async function getDoctors(req,res){
+    try {
+        let doctors = await userModel.find({ role: 'DOCTOR', status: true });
+        return res.json(doctors);
+    }
+    catch (err) {
+        return res.status(500).json({ title: "Error retrieving doctors", massage: err })
+    }
+}

@@ -15,8 +15,8 @@ export async function addOrder(req, res) {
         if (!req.body)
             return res.status(400).json({ title: "Invalid order data", message: "Order data is required" })
         let { userId, products, appointmentDate } = req.body
-        if (!userId || !products)  //האם צריך להוסיף את תאריך היעד?
-            return res.status(400).json({ title: "Invalid order data", message: "User ID and products are required" })
+        if (!userId || !products || !appointmentDate)
+            return res.status(400).json({ title: "Invalid order data", message: "User ID, products, and appointment date are required" })
         let already = await orderModel.findOne({ userId, products, appointmentDate })
         if (already)
             return res.status(400).json({ title: "Duplicate order", message: "An order with the same user ID, products, and appointment date already exists" })
@@ -31,8 +31,8 @@ export async function addOrder(req, res) {
 
 export async function cancelOrder(req, res) {
     try {
-        let orderId = req.params.id  //????????
-        let order = await orderModel.findByIdAndDelete(orderId, { status: false })
+        let {orderId} = req.body //או מהפרמטרים של ה URL?
+        let order = await orderModel.findByIdAndDelete(orderId, { status: false }) //האם צריך למחוק או לשנות סטטוס?
         if (!order)
             return res.status(404).json({ title: "Order not found", message: "No order found with the given ID" })
         return res.status(200).json(order)
@@ -44,7 +44,7 @@ export async function cancelOrder(req, res) {
 
 export async function getOrdersByUserId(req, res) {
     try{
-        let userId = req.params.userId; //איך ניתן לשלוף את ה id של המשתמש ע"י גישה ישירה ולא דרך שליחת ה id?
+        let {userId} = req.params; //איך ניתן לשלוף את ה id של המשתמש ע"י גישה ישירה ולא דרך שליחת ה id?
 
     }
     catch(err){

@@ -3,17 +3,17 @@ import { productModel } from './product.js';
 import { use } from 'react';
 
 //ההזמנה = הזמנת תור לטיפול כלשהוא
-//תאריך קביעת התור - צריך?
+//קוד לקוח- פציינט (קישור למודל לקוח)
+//סוג הטיפול- בכל קביעת תור ניתן לבחור בטיפול אחד. טיפול נוסף אף לאותו לקוח ובאותו יום יעשה בתור נפרד (כי השעה שונה)
 //תאריך ביצוע התור
-//רופא מסוים?
+//רופא מסוים
 //כתובת-איזו? של סניף?
-//קוד לקוח- פציינט
-//סוג הטיפול/ים- לקוח אחד יכול לקבוע תור לכמה טיפולים בו זמנית
 //התור בוצע- בוליאני
+//(תאריך קביעת התור + תאריך העדכון האחרון)
 
-const minProductSchema = new mongoose.Schema({ //יש צורך לפרט לכל אחד מהשדות כמו בסכמת המקור?
-    name:{
-        type:String, 
+const minProductSchema = new mongoose.Schema({
+    name: {
+        type: String,
         unique: true
     },
     price: {
@@ -23,14 +23,13 @@ const minProductSchema = new mongoose.Schema({ //יש צורך לפרט לכל �
     imgUrl: String,
     category: {
         type: String,
-        enum: ['Dental','General_Medicine','Pediatrics','Psychology','Orthopedics','Gynecology'],
+        enum: ['Dental', 'General_Medicine', 'Pediatrics', 'Psychology', 'Orthopedics', 'Gynecology'],
         default: 'General_Medicine'
     },
-    //צריך להוסיף בסכמת המינימום את הסטטוס?- אם קיים
-    quantity: {
-        type: Number,
-        required: true,
-        min: 1
+    status: {
+        type: String,
+        enum: ['AVAILABLE', 'UNAVAILABLE'],
+        default: 'AVAILABLE'
     }
 })
 
@@ -41,19 +40,18 @@ const orderSchema = new mongoose.Schema({
         ref: 'users',
         required: true
     },
-    products:{
-        type:minProductSchema,
-        enum:[]
-    } ,
-    appointmentDate:{ //אפשרות לבחירת תאריך ביצוע התור
+    product: minProductSchema,
+    appointmentDate: { //אפשרות לבחירת תאריך ביצוע התור
         type: Date,
-        default: Date.now                                                                                                                                                                                    
+        default: Date.now  //צריך לשים סוגריים על פונקציית now?
     },
-    // doctorName:
+    doctorName: String,
+    
     // branchAddress:
-    status:{
-        type:Boolean,
-        default:false //התור עוד לא בוצע
+
+    status: {
+        type: Boolean,
+        default: false //התור עוד לא בוצע
     }
 }, { timestamps: true })
 

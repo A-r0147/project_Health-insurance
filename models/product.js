@@ -1,9 +1,6 @@
 import mongoose from 'mongoose';
 //ה-product =סוגי טיפולים
-//לכל טיפול: שם, תיאור,מחיר,תמונה- ציור,קטגוריה,
-//איזה תאריך ניתן לעשות?
-//האם צריך סטטוס?
-
+//לכל טיפול: שם, תיאור,מחיר,תמונה- אייקון,קטגוריה וסטטוס
 const productSchema = new mongoose.Schema({
     name:{
         type:String, 
@@ -14,18 +11,17 @@ const productSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    // publicationDate: Date, //תאריך הוצאה לאור
     imgUrl: String,
     category: {
         type: String,
         enum: ['General_Medicine','Dental','Pediatrics','Psychology','Orthopedics','Gynecology'],
         default: 'General_Medicine'
     },
-    // status:{
-    //     type:String,
-    //     enum:['AVAILABLE','OUT_OF_STOCK'],
-    //     default:'AVAILABLE'
-    // }
+    status:{
+        type:String,
+        enum:['AVAILABLE','UNAVAILABLE'],
+        default:'AVAILABLE'
+    }
 })
 
 export const productModel = mongoose.model('products', productSchema)

@@ -19,10 +19,6 @@ const userSchema = new mongoose.Schema({
         enum:['ADMIN','SECRETARY','DOCTOR','PATIENT'],
         default:'PATIENT'
     },
-    // registrationDate:{
-    //   type:Date,
-    //   default: Date.now
-    // },
     status:{
         type:Boolean,
         default:true
