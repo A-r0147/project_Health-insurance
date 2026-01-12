@@ -18,11 +18,11 @@ app.use(cors()); //איפשור גישה מקליינט לשרת
 connectToDB();
 
 app.use("/api/products", productRouter);
-app.use("api/users",userRouter);
-app.use("api/orders",orderRouter);
+app.use("/api/users",userRouter);
+app.use("/api/orders",orderRouter);
 
-const PORT = process.env.PORT || 5000;
+const port = process.env.PORT || 5000;
 
-app.listen(PORT,()=>{
-    console.log(`Server is running on port ${PORT}`);
+app.listen(port,()=>{
+    console.log(`Server is running on port ${port}`);
 })

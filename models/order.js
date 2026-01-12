@@ -12,6 +12,11 @@ import { use } from 'react';
 //(תאריך קביעת התור + תאריך העדכון האחרון)
 
 const minProductSchema = new mongoose.Schema({
+    productId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'products',
+        required: true
+    },
     name: {
         type: String,
         unique: true
@@ -25,13 +30,11 @@ const minProductSchema = new mongoose.Schema({
         type: String,
         enum: ['Dental', 'General_Medicine', 'Pediatrics', 'Psychology', 'Orthopedics', 'Gynecology'],
         default: 'General_Medicine'
-    },
-    status: {
-        type: String,
-        enum: ['AVAILABLE', 'UNAVAILABLE'],
-        default: 'AVAILABLE'
     }
-})
+    //צריך להוסיף בסכמת המינימום גם את הססטוס?
+},
+    { _id: false }
+)
 
 const orderSchema = new mongoose.Schema({
 
@@ -41,18 +44,21 @@ const orderSchema = new mongoose.Schema({
         required: true
     },
     product: minProductSchema,
-    appointmentDate: { //אפשרות לבחירת תאריך ביצוע התור
+    appointmentDate: { //אפשרות לבחירת תאריך בו יתבצע התור
         type: Date,
-        default: Date.now  //צריך לשים סוגריים על פונקציית now?
+        required:true
     },
     doctorName: String,
-    
     // branchAddress:
-
     status: {
         type: Boolean,
         default: false //התור עוד לא בוצע
     }
-}, { timestamps: true })
+}, { timestamps: true });
+
+orderSchema.index(
+    { userId:1, doctorName:1, appointmentDate:1 },
+    { unique: true }
+)
 
 export const orderModel = mongoose.model('orders', orderSchema);
