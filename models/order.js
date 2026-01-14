@@ -12,29 +12,17 @@ import { use } from 'react';
 //(תאריך קביעת התור + תאריך העדכון האחרון)
 
 const minProductSchema = new mongoose.Schema({
-    productId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'products',
-        required: true
-    },
-    name: {
-        type: String,
-        unique: true
-    },
-    price: {
-        type: Number,
-        required: true
-    },
-    imgUrl: String,
-    category: {
-        type: String,
-        enum: ['Dental', 'General_Medicine', 'Pediatrics', 'Psychology', 'Orthopedics', 'Gynecology'],
-        default: 'General_Medicine'
-    }
-    //צריך להוסיף בסכמת המינימום גם את הססטוס?
-},
-    { _id: false }
-)
+  productId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'products',
+    required: true
+  },
+  name: String,
+  price: Number,
+  imgUrl: String,
+  category: String
+}, { _id: false })
+
 
 const orderSchema = new mongoose.Schema({
 
