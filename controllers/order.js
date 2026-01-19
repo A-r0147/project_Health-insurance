@@ -56,16 +56,12 @@ export async function addOrder(req, res) {
     }
 }
 
-export async function cancelOrder(req, res) {  //ממש למחוק תור שמתבטל? כי הלפת סטטוס=התור בוצע!?
+export async function cancelOrder(req, res) {
     try {
         let { id } = req.params
-        let order = await orderModel.findById(id)
+        let order = await orderModel.findByIdAndDelete(id)
         if (!order)
             return res.status(404).json({ title: "Order not found", message: "No order found with the given ID" })
-        if (order.status === true)
-            return res.status(400).json({ title: "Cannot cancel completed order", message: "The order has already been completed and cannot be cancelled" })
-        order.status = false;
-        await order.save()
         return res.status(200).json(order)
     }
     catch (err) {
