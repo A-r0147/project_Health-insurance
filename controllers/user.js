@@ -85,7 +85,9 @@ export async function getUserById(req, res) {
 export async function getDoctors(req, res) {
     try {
         let doctors = await userModel.find({ role: 'DOCTOR', status: true });
-        return res.json(doctors);
+        let { password, ...other } = doctors.toObject();
+
+        return res.json(other)
     }
     catch (err) {
         return res.status(500).json({ title: "Error retrieving doctors", massage: err })
