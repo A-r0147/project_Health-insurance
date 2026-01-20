@@ -60,7 +60,9 @@ export async function login(req, res) {
 export async function getUsers(req, res) {  //צריך להחזיר רק את הפציינטים או את כולם?
     try {
         let users = await userModel.find({ status: true });
-        return res.json(users);
+        let { password, ...other } = users.toObject();
+
+        return res.json(other)
     }
     catch (err) {
         return res.status(500).json({ title: "Error retrieving users", massage: err })
