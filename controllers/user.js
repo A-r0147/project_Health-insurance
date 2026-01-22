@@ -57,12 +57,14 @@ export async function login(req, res) {
     }
 }
 
-export async function getUsers(req, res) {  //צריך להחזיר רק את הפציינטים או את כולם?
+export async function getUsers(req, res) {
     try {
         let users = await userModel.find({ status: true });
-        let { password, ...other } = users.toObject();
-
-        return res.json(other)
+        let usersWithoutPasswords = users.map(user => {
+            let { password, ...other } = user.toObject();
+            return other;
+        });
+        return res.json(usersWithoutPasswords)
     }
     catch (err) {
         return res.status(500).json({ title: "Error retrieving users", massage: err })
@@ -70,14 +72,21 @@ export async function getUsers(req, res) {  //צריך להחזיר רק את ה
 }
 
 export async function getUserById(req, res) {
-    try{
-        let {id} = req.params;
+    try {
+        let { id } = req.params;
         let user = await userModel.findById(id);
-        if(!user || user.status===false)
-            return res.status(404).json({title:"No such user", massage:"User not found"})
-        return res.json(user);
+        if (!user || user.status === false)
+            return res.status(404).json({ title: "No such user", massage: "User not found" })
+        try {
+            let { password, ...other } = user.toObject();
+
+            return res.json(other)
+        }
+        catch (err) {
+            return res.status(500).json({ title: "Error retrieving users", massage: err })
+        }
     }
-    catch(err){
+    catch (err) {
         return res.status(500).json({ title: "Error retrieving user", massage: err })
     }
 }
@@ -85,26 +94,43 @@ export async function getUserById(req, res) {
 export async function getDoctors(req, res) {
     try {
         let doctors = await userModel.find({ role: 'DOCTOR', status: true });
-        let { password, ...other } = doctors.toObject();
-
-        return res.json(other)
+        let doctorsWithoutPasswords = doctors.map(doctor => {
+            let { password, ...other } = doctor.toObject();
+            return other;
+        });
+        return res.json(doctorsWithoutPasswords)
     }
     catch (err) {
         return res.status(500).json({ title: "Error retrieving doctors", massage: err })
     }
 }
 
+export async function getPatients(req, res) {
+    try {
+        let patients = await userModel.find({ role: 'PATIENT', status: true });
+        let patientsWithoutPasswords = patients.map(patient => {
+            let { password, ...other } = patient.toObject();
+            return other;
+        });
+        return res.json(patientsWithoutPasswords)
+    }
+    catch (err) {
+        return res.status(500).json({ title: "Error retrieving patients", massage: err })
+    }
+}
+
 export async function deleteUser(req, res) {
-    try{
-        let  {id} = req.params;
+    try {
+        let { id } = req.params;
         let user = await userModel.findById(id);
-        if(!user || user.status===false)
-            return res.status(404).json({title:"No such user", massage:"User not found"})
+        if (!user || user.status === false)
+            return res.status(404).json({ title: "No such user", massage: "User not found" })
         user.status = false;
         await user.save();
-        return  res.status(200).json({title:"User deleted", massage:user})
+        let { password, ...other } = user.toObject();
+        return res.status(200).json({ title: "User deleted", massage: other })
     }
-    catch(err){
+    catch (err) {
         return res.status(500).json({ title: "Error deleting user", massage: err })
     }
 }

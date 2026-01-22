@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>תיעוד API - קופת חולים</title>
+    <style>
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{font-family:Segoe UI, Tahoma, Verdana, sans-serif;background:#fff;color:#000;padding:20px;direction:rtl}
+        .container{max-width:1200px;margin:0 auto;padding:20px}
+        .header{text-align:center;margin-bottom:16px}
+        .header h1{font-size:1.4rem;margin-bottom:6px}
+        .header p{font-size:0.95rem}
+        .content{}
+        .entity-section{margin-bottom:24px}
+        .entity-title{font-size:1.05rem;font-weight:600;margin-bottom:10px}
+        table{width:100%;border-collapse:collapse;border:1px solid #ccc}
+        th,td{padding:18px;text-align:right;font-size:0.98rem;border:1px solid #ddd;vertical-align:top}
+        th{font-weight:700}
+        .params-body,.endpoint,.empty-field{font-family:monospace;font-size:0.95rem;white-space:pre-wrap; direction: ltr; unicode-bidi: embed; text-align: left;}
+        .errors{margin:0;padding:0;list-style:disc inside;direction:rtl}
+        .errors li{margin:0 0 8px 0;padding-right:6px}
+        @media print{body{background:#fff}}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>תיעוד API</h1>
+            <p>קופת חולים - מערכת ניהול תורים ותיפולים רפואיים</p>
+            <p style="font-size: 0.9em; margin-top: 10px;">כתובת שרת: http://localhost:5000</p>
+        </div>
+
+        <div class="content">
+            <!-- USERS SECTION -->
+            <div class="entity-section">
+                <div class="entity-title">משתמשים</div>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>CALL</th>
+                            <th>כתובת</th>
+                            <th>פרמטרים</th>
+                            <th>BODY</th>
+                            <th>תיאור הפונקציה</th>
+                            <th>שגיאות אפשריות</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="method-badge get">GET</span></td>
+                            <td><span class="endpoint">/api/users/doctors</span></td>
+                            <td><span class="empty-field">–</span></td>
+                            <td><span class="empty-field">–</span></td>
+                            <td>קבלת כל הרופאים במערכת</td>
+                            <td><ul class="errors"><li><span class="status-code"><strong>500:</strong> שגיאה בשרת</span></li></ul></td>
+                        </tr>
+                        <tr>
+                            <td><span class="method-badge get">GET</span></td>
+                            <td><span class="endpoint">/api/users/patients</span></td>
+                            <td><span class="empty-field">–</span></td>
+                            <td><span class="empty-field">–</span></td>
+                            <td>קבלת כל המטופלים במערכת</td>
+                            <td><ul class="errors"><li><span class="status-code"><strong>500:</strong> שגיאה בשרת</span></li></ul></td>
+                        </tr>
+                        <tr>
+                            <td><span class="method-badge get">GET</span></td>
+                            <td><span class="endpoint">/api/users</span></td>
+                            <td><span class="empty-field">–</span></td>
+                            <td><span class="empty-field">–</span></td>
+                            <td>קבלת כל המשתמשים הפעילים במערכת (ללא סיסמאות)</td>
+                            <td><ul class="errors"><li><span class="status-code"><strong>500:</strong> שגיאה בשרת</span></li></ul></td>
+                        </tr>
+                        <tr>
+                            <td><span class="method-badge get">GET</span></td>
+                            <td><span class="endpoint">/api/users/{id}</span></td>
+                            <td><span class="params-body">id - מזהה המשתמש (MongoDB ObjectId)</span></td>
+                            <td><span class="empty-field">–</span></td>
+                            <td>קבלת משתמש ספציפי לפי מזהה</td>
+                            <td><ul class="errors"><li><span class="status-code status-error"><strong>404:</strong> משתמש לא קיים</span></li><li><span class="status-code"><strong>500:</strong> שגיאה בשרת</span></li></ul></td>
+                        </tr>
+                        <tr>
+                            <td><span class="method-badge post">POST</span></td>
+                            <td><span class="endpoint">/api/users/login</span></td>
+                            <td><span class="empty-field">–</span></td>
+                            <td><span class="params-body">email, password</span></td>
+                            <td>התחברות למערכת - אימות אימייל וסיסמה</td>
+                            <td><ul class="errors"><li><span class="status-code status-validation"><strong>400:</strong> דוא"ל או סיסמה חסרים</span></li><li><span class="status-code status-error"><strong>404:</strong> דוא"ל או סיסמה אינם נכונים</span></li><li><span class="status-code"><strong>500:</strong> שגיאה בשרת</span></li></ul></td>
+                        </tr>
+                        <tr>
+                            <td><span class="method-badge post">POST</span></td>
+                            <td><span class="endpoint">/api/users</span></td>
+                            <td><span class="empty-field">–</span></td>
+                                                        <td><span class="params-body">userName, email, password</span></td>
+                            <td>הוספת משתמש חדש למערכת עם הצפנת סיסמה</td>
+                            <td><ul class="errors"><li><span class="status-code status-validation"><strong>400:</strong> נתונים חסרים או שגויים, סיסמה חלשה, דוא"ל לא תקין</span></li><li><span class="status-code status-error"><strong>409:</strong> משתמש עם אותו דוא"ל כבר קיים</span></li><li><span class="status-code"><strong>500:</strong> שגיאה בשרת</span></li></ul></td>
+                        </tr>
+                        <tr>
+                            <td><span class="method-badge delete">DELETE</span></td>
+                            <td><span class="endpoint">/api/users/{id}</span></td>
+                            <td><span class="params-body">id - מזהה המשתמש</span></td>
+                            <td><span class="empty-field">–</span></td>
+                            <td>מחיקת משתמש (soft delete - שינוי status לכ-false)</td>
+                            <td><ul class="errors"><li><span class="status-code status-error"><strong>404:</strong> משתמש לא קיים</span></li><li><span class="status-code"><strong>500:</strong> שגיאה בשרת</span></li></ul></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- PRODUCTS SECTION -->
+            <div class="entity-section">
+                <div class="entity-title">טיפולים</div>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>CALL</th>
+                            <th>כתובת מדויקת</th>
+                            <th>פרמטרים</th>
+                            <th>BODY</th>
+                            <th>תיאור הפונקציה</th>
+                            <th>שגיאות אפשריות</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="method-badge get">GET</span></td>
+                            <td><span class="endpoint">/api/products/pages</span></td>
+                            <td><span class="params-body">limit (default: 3) - מספר פריטים בעמוד</span></td>
+                            <td><span class="empty-field">–</span></td>
+                            <td>קבלת מספר העמודים הכולל של הטיפולים</td>
+                            <td><ul class="errors"><li><span class="status-code"><strong>500:</strong> שגיאה בשרת</span></li></ul></td>
+                        </tr>
+                        <tr>
+                            <td><span class="method-badge get">GET</span></td>
+                            <td><span class="endpoint">/api/products</span></td>
+                            <td><span class="params-body">limit (default: 3) - מספר פריטים בעמוד
+page (default: 1) - מספר העמוד</span></td>
+                            <td><span class="empty-field">–</span></td>
+                            <td>קבלת רשימת טיפולים זמינים</td>
+                            <td><ul class="errors"><li><span class="status-code"><strong>500:</strong> שגיאה בשרת</span></li></ul></td>
+                        </tr>
+                        <tr>
+                            <td><span class="method-badge get">GET</span></td>
+                            <td><span class="endpoint">/api/products/{id}</span></td>
+                            <td><span class="params-body">id - מזהה הטיפול</span></td>
+                            <td><span class="empty-field">–</span></td>
+                            <td>קבלת פרטי טיפול ספציפי</td>
+                            <td><ul class="errors"><li><span class="status-code status-error"><strong>404:</strong> טיפול לא קיים</span></li><li><span class="status-code"><strong>500:</strong> שגיאה בשרת</span></li></ul></td>
+                        </tr>
+                        <tr>
+                            <td><span class="method-badge post">POST</span></td>
+                            <td><span class="endpoint">/api/products</span></td>
+                            <td><span class="empty-field">–</span></td>
+                            <td><span class="params-body">name, price, imgUrl, category</span></td>
+                            <td>הוספת טיפול חדש למערכת</td>
+                            <td><ul class="errors"><li><span class="status-code status-validation"><strong>400:</strong> נתונים חסרים, מחיר שלילי, שם קצר מ-2 תווים</span></li><li><span class="status-code status-error"><strong>400:</strong> טיפול עם אותו שם כבר קיים</span></li><li><span class="status-code"><strong>500:</strong> שגיאה בשרת</span></li></ul></td>
+                        </tr>
+                        <tr>
+                            <td><span class="method-badge put">PUT</span></td>
+                            <td><span class="endpoint">/api/products/{id}</span></td>
+                            <td><span class="params-body">id - מזהה הטיפול</span></td>
+                            <td><span class="params-body">name, description, price, imgUrl, category</span></td>
+                            <td>עדכון פרטי טיפול</td>
+                            <td><ul class="errors"><li><span class="status-code status-validation"><strong>400:</strong> נתונים חסרים, מחיר שלילי</span></li><li><span class="status-code status-error"><strong>404:</strong> טיפול לא קיים</span></li><li><span class="status-code"><strong>500:</strong> שגיאה בשרת</span></li></ul></td>
+                        </tr>
+                        <tr>
+                            <td><span class="method-badge delete">DELETE</span></td>
+                            <td><span class="endpoint">/api/products/{id}</span></td>
+                            <td><span class="params-body">id - מזהה הטיפול</span></td>
+                            <td><span class="empty-field">–</span></td>
+                            <td>מחיקת טיפול (soft delete - שינוי status ל-UNAVAILABLE)</td>
+                            <td><ul class="errors"><li><span class="status-code status-error"><strong>404:</strong> טיפול לא קיים</span></li><li><span class="status-code"><strong>500:</strong> שגיאה בשרת</span></li></ul></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- ORDERS SECTION -->
+            <div class="entity-section">
+                <div class="entity-title">הזמנות תורים</div>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>CALL</th>
+                            <th>כתובת מדויקת</th>
+                            <th>פרמטרים</th>
+                            <th>BODY</th>
+                            <th>תיאור הפונקציה</th>
+                            <th>שגיאות אפשריות</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="method-badge get">GET</span></td>
+                            <td><span class="endpoint">/api/orders</span></td>
+                            <td><span class="empty-field">–</span></td>
+                            <td><span class="empty-field">–</span></td>
+                            <td>קבלת כל התורים במערכת</td>
+                            <td><ul class="errors"><li><span class="status-code"><strong>500:</strong> שגיאה בשרת</span></li></ul></td>
+                        </tr>
+                        <tr>
+                            <td><span class="method-badge get">GET</span></td>
+                            <td><span class="endpoint">/api/orders/{userId}</span></td>
+                            <td><span class="params-body">userId - מזהה המשתמש</span></td>
+                            <td><span class="empty-field">–</span></td>
+                            <td>קבלת כל התורים של משתמש ספציפי</td>
+                            <td><ul class="errors"><li><span class="status-code"><strong>500:</strong> שגיאה בשרת</span></li></ul></td>
+                        </tr>
+                        <tr>
+                            <td><span class="method-badge post">POST</span></td>
+                            <td><span class="endpoint">/api/orders</span></td>
+                            <td><span class="empty-field">–</span></td>
+                            <td><span class="params-body">userId, productId, appointmentDate</span></td>
+                            <td>קביעת תור - בדיקת המשתמש והטיפול, בדיקת תאריך תקין, בדיקת תור כפול</td>
+                            <td><ul class="errors"><li><span class="status-code status-validation"><strong>400:</strong> נתונים חסרים, תאריך לא תקין, תאריך בעבר</span></li><li><span class="status-code status-error"><strong>400:</strong> תור זהה כבר קיים</span></li><li><span class="status-code"><strong>404:</strong> משתמש או טיפול לא קיים</span></li><li><span class="status-code"><strong>500:</strong> שגיאה בשרת</span></li></ul></td>
+                        </tr>
+                        <tr>
+                            <td><span class="method-badge delete">DELETE</span></td>
+                            <td><span class="endpoint">/api/orders/{id}</span></td>
+                            <td><span class="params-body">id - מזהה התור</span></td>
+                            <td><span class="empty-field">–</span></td>
+                            <td>ביטול תור (hard delete - מחיקה מעמיקה)</td>
+                            <td><ul class="errors"><li><span class="status-code status-error"><strong>404:</strong> תור לא קיים</span></li><li><span class="status-code"><strong>500:</strong> שגיאה בשרת</span></li></ul></td>
+                        </tr>
+                        <tr>
+                            <td><span class="method-badge put">PUT</span></td>
+                            <td><span class="endpoint">/api/orders/{id}</span></td>
+                            <td><span class="params-body">id - מזהה ההזמנה</span></td>
+                            <td><span class="empty-field">–</span></td>
+                            <td>עדכון סטטוס תור ל-true (התור בוצע)</td>
+                            <td><ul class="errors"><li><span class="status-code status-error"><strong>404:</strong> תור לא קיים</span></li><li><span class="status-code"><strong>500:</strong> שגיאה בשרת</span></li></ul></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+
+        </div>
+
+
+    </div>
+</body>
+</html>
