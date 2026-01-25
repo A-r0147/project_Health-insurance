@@ -46,6 +46,8 @@ export async function addProduct(req, res) {
         let { name, description, price, imgUrl, category } = req.body
         if (!name || !price || !category || !imgUrl)
             return res.status(400).json({ title: "Invalid product data", massage: "Name, price, category or image URL are required" })
+        if (!description )
+            description = "";
         if (name.length < 2)
             return res.status(400).json({ title: "Invalid product data", massage: "Name must be at least 2 characters long" })
         if (price < 0)

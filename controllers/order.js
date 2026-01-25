@@ -62,7 +62,9 @@ export async function cancelOrder(req, res) {
         let order = await orderModel.findByIdAndDelete(id)
         if (!order)
             return res.status(404).json({ title: "Order not found", message: "No order found with the given ID" })
-        return res.status(200).json(order)
+        if(order.status === true)
+            return res.status(401).json({title:"Cannot cancel order",message:"The order cannot be canceled,it has already been done."})
+        return res.status(200).json({title:"Order canceled.",message:order})
     }
     catch (err) {
         return res.status(500).json({ title: "Error cancelling order", message: err })
